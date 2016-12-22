@@ -1,4 +1,5 @@
-Motor Control Program
+Device Control Functions
+(Github.com: marquezc/mctrl)
 
 Functions for control interface to stepping motors.
 
