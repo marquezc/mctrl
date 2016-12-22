@@ -18,10 +18,12 @@
 #define MAX_NETWORKS 16 // Maximum # of networks a device can be attached to.
 #define MAX_DEVICES 128 // Maximum # of devices that may be attached to a net.
 
+#define UDP 0xFE;
+#define TCP 0xFF;
+
 /* -------------------------------------------------------------------------- */
 /*  Program Files and Path Information -------------------------------------- */
 /* -------------------------------------------------------------------------- */
-
 
 const char *mctrl_subfolder = "/mctrl";
 const char *devnet_subfolder = "/devnet";
@@ -30,9 +32,6 @@ const char *device_subfolder = "/device";
 /* -------------------------------------------------------------------------- */
 /*  Connection and Nodes (MCU, MCTRL) --------------------------------------- */
 /* -------------------------------------------------------------------------- */
-
-#define UDP 0;
-#define TCP 1;
 
 typedef struct mcu
 {
@@ -171,8 +170,18 @@ int mctrl_interface_status (Iface *m_iface);
 void mctrl_print_interface_info (Iface *m_iface);
 
 /* -------------------------------------------------------------------------- */
-/*  MCTRL Device Network ---------------------------------------------------- */
+/*  MCTRL Device and Device  Network ---------------------------------------- */
 /* -------------------------------------------------------------------------- */
+
+typedef struct device
+{
+  unsigned int id; // Unique [integer] identifier > 0;
+  char name[MAX_NAME]; // Device name;
+  char desc[MAX_DESC]; // Device description;
+  char path[MAX_PATH]; // Device profile path;
+  unsigned int net[MAX_NETWORKS]; // Identifiers of attached device networks;
+  unsigned int type; // Device type flag byte (see defines in General section);
+} Device;
 
 typedef struct devnet
 {
@@ -184,6 +193,35 @@ typedef struct devnet
   unsigned int devices[MAX_DEVICES]; // Identifiers of attached devices;
   int state; // State of devnet {ON, OFF};
 } Devnet;
+
+/* mctrl_device_new()
+   Create a new movement device profile.
+   Return devnet ID > 0 on success. Return -1 on failure. */
+
+int mctrl_device_new (Device *m_device);
+
+/* mctrl_device_del()
+   Remove the specifed movement device.
+   Return 1 on success. Return -1 on failure. */
+
+int mctrl_device_del (Device *m_device);
+
+/* mctrl_device_en()
+   Enable/Disable the specified movement device on the
+   given control network.
+   Return 1 on success. Return 0 on failure. */
+
+int mctrl_device_en (Devnet *m_devnet, Device *m_device);
+
+/* mctrl_dev_status()
+   Return the status of the specified movement devices. */
+
+int mctrl_device_status (Devnet *m_devnt, Device *m_device);
+
+/* mctrl_print_device_info()
+   Print device information to STDOUT */
+
+void mctrl_print_device_info (Device *m_device);
 
 /* mctrl_devnet_new()
    Create a new device control network for movement system.
@@ -225,50 +263,6 @@ int mctrl_devnet_add_device (Devnet *m_devnet, Device *m_device);
    Return 1 on success. Return 0 on failure. */
 
 int mctrl_devnet_del_device (Devnet *m_devnet, Device *m_device);
-
-/* -------------------------------------------------------------------------- */
-/*  MCTRL Device ------------------------------------------------------------ */
-/* -------------------------------------------------------------------------- */
-
-typedef struct device
-{
-  unsigned int id; // Unique [integer] identifier > 0;
-  char name[MAX_NAME]; // Device name;
-  char desc[MAX_DESC]; // Device description;
-  char path[MAX_PATH]; // Device profile path;
-  unsigned int net[MAX_NETWORKS]; // Identifiers of attached device networks;
-  unsigned int type; // Device type flag byte (see defines in General section);
-} Device;
-
-/* mctrl_device_new()
-   Create a new movement device profile.
-   Return devnet ID > 0 on success. Return -1 on failure. */
-
-int mctrl_device_new (Device *m_device);
-
-/* mctrl_device_del()
-   Remove the specifed movement device.
-   Return 1 on success. Return -1 on failure. */
-
-int mctrl_device_del (Device *m_device);
-
-/* mctrl_device_en()
-   Enable/Disable the specified movement device on the
-   given control network.
-   Return 1 on success. Return 0 on failure. */
-
-int mctrl_device_en (Devnet *m_devnet, Device *m_device);
-
-/* mctrl_dev_status()
-   Return the status of the specified movement devices. */
-
-int mctrl_device_status (Devnet *m_devnt, Device *m_device);
-
-/* mctrl_print_device_info()
-   Print device information to STDOUT */
-
-void mctrl_print_device_info (Device *m_device);
-
 
 /* -------------------------------------------------------------------------- */
 /*  MCTRL Positioning ------------------------------------------------------- */
