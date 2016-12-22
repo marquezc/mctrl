@@ -11,6 +11,19 @@
 /*  MCTRL Node -------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
 
+typedef int Mcu;
+typedef int Mctrl;
+typedef int Cxn;
+typedef struct cxn_status
+{
+  int id; // Unique [integer] connection identifier
+  int state; // Connection state (ON/OFF)
+  Mcu mcu; // Connection MCU identifier.
+  Mctrl mctrl; // Connection MCTRL identifier.
+  
+  
+} Cxn_status
+
 /* mctrl_connect()
    Connect the movement control node (MCTRL) to the 
    master control unit (MCU).  */
