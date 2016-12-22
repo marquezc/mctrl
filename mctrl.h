@@ -7,29 +7,49 @@
 #define ON 1
 #define OFF 0
 
+#define MAX_NAME 32
+
 /* -------------------------------------------------------------------------- */
-/*  MCTRL Node -------------------------------------------------------------- */
+/*  Connection and Nodes (MCU, MCTRL) --------------------------------------- */
 /* -------------------------------------------------------------------------- */
 
-typedef int Mcu;
-typedef int Mctrl;
-typedef int Cxn;
-typedef struct cxn_status
+#define UDP 0;
+#define TCP 1;
+
+typedef struct mcu
 {
-  int id; // Unique [integer] connection identifier
-  int state; // Connection state (ON/OFF)
-  Mcu mcu; // Connection MCU identifier.
-  Mctrl mctrl; // Connection MCTRL identifier.
-  
-  
-} Cxn_status
+  int id; // Unique [integer] Mcu identifier > 0;
+  char name[MAX_NAME];  // MCU name;
+  unsigned int ip; // MCU IP address;
+} Mcu;
+
+typedef struct mctrl
+{
+  int id; // Unique [integer] Mcu identifier > 0;
+  char name[MAX_NAME]; // MCTRL name;
+  unsigned int ip; // MCTRL IP address;
+} Mctrl;
+
+typedef struct cxn
+{
+  int id; // Unique [integer] connection identifier > 0;
+  char name[MAX_NAME]; // Connection name;
+  int state; // Connection state (ON/OFF);
+  Mcu mcu; // Connection MCU identifier;
+  Mctrl mctrl; // Connection MCTRL identifier;
+  int protocol; // {UDP, TCP};
+} Cxn;
 
 /* mctrl_connect()
    Connect the movement control node (MCTRL) to the 
    master control unit (MCU).  */
 
+void mctrl_connect(Cxn *m_cxn, Mcu *m_mcu, Mctrl *m_mctrl, int protocol);
+
 /* mctrl_connection_status()
    Return the connection status of the MCTRL node. */
+int mctrl_connection_status(Cxn *m_cxn);
+
 
 /* -------------------------------------------------------------------------- */
 /*  MCTRL Interface --------------------------------------------------------- */
